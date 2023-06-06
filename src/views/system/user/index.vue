@@ -65,11 +65,17 @@
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" @keydown.native="keydown($event)" />
             </el-form-item>
-            <el-form-item label="电话" prop="phone">
-              <el-input v-model.number="form.phone" />
-            </el-form-item>
             <el-form-item label="昵称" prop="nickName">
               <el-input v-model="form.nickName" @keydown.native="keydown($event)" />
+            </el-form-item>
+            <el-form-item label="会员时间" prop="vipTime">
+              <el-date-picker v-model="form.vipTime" type="datetime" style="width: 370px;" />
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="form.password" @keydown.native="keydown($event)" />
+            </el-form-item>
+            <el-form-item label="积分" prop="wallet">
+              <el-input v-model="form.wallet" @keydown.native="keydown($event)" />
             </el-form-item>
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" />
@@ -144,6 +150,13 @@
           <el-table-column :selectable="checkboxT" type="selection" width="55" />
           <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名" />
           <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />
+          <el-table-column :show-overflow-tooltip="true" prop="vipTime" label="会员时间" />
+          <el-table-column :show-overflow-tooltip="true" prop="wallet" label="积分" />
+          <el-table-column prop="sigState" label="签到状态">
+            <template slot-scope="scope">
+              {{ dict.label.sig_state[scope.row.sigState] }}
+            </template>
+          </el-table-column>
           <el-table-column prop="gender" label="性别" />
           <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话" />
           <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱" />
@@ -189,7 +202,7 @@
 
 <script>
 import crudUser from '@/api/system/user'
-import { isvalidPhone } from '@/utils/validate'
+// import { isvalidPhone } from '@/utils/validate'
 import { getDepts, getDeptSuperior } from '@/api/system/dept'
 import { getAll, getLevel } from '@/api/system/role'
 import { getAllJob } from '@/api/system/job'
@@ -205,7 +218,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
 let userRoles = []
 let userJobs = []
-const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
+const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null, vipTime: null, wallet: null, sigState: null, password: null }
 export default {
   name: 'User',
   components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
@@ -214,18 +227,18 @@ export default {
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   // 数据字典
-  dicts: ['user_status'],
+  dicts: ['user_status', 'sig_state'],
   data() {
     // 自定义验证
-    const validPhone = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入电话号码'))
-      } else if (!isvalidPhone(value)) {
-        callback(new Error('请输入正确的11位手机号码'))
-      } else {
-        callback()
-      }
-    }
+    // const validPhone = (rule, value, callback) => {
+    //   if (!value) {
+    //     callback(new Error('请输入电话号码'))
+    //   } else if (!isvalidPhone(value)) {
+    //     callback(new Error('请输入正确的11位手机号码'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       height: document.documentElement.clientHeight - 180 + 'px;',
       deptName: '', depts: [], deptDatas: [], jobs: [], level: 3, roles: [],
@@ -252,9 +265,6 @@ export default {
         email: [
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
-        ],
-        phone: [
-          { required: true, trigger: 'blur', validator: validPhone }
         ]
       }
     }
