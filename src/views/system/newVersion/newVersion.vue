@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div v-loading.fullscreen.lock="fullscreenLoading" class="app-container">
     <el-row style="margin-top: 20px;">
       <el-col :span="14" :offset="4">
         <header class="form_header">添加新版本</header>
@@ -56,6 +56,7 @@ export default {
   name: 'NewVersion',
   data() {
     return {
+      fullscreenLoading: false,
       appForm: {
         appKey: '',
         versionName: '',
@@ -96,6 +97,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.hasSelectedApk) {
+            this.fullscreenLoading = true
+            setTimeout(() => {
+              this.fullscreenLoading = false
+            }, 30000)
             addVersionInfo(this.appForm).then(response => {
               console.log(response.data)
               if (response.data.versionId !== 0) {
@@ -133,6 +138,8 @@ export default {
             message: response.msg
           })
         }
+      }).finally(response => {
+        this.fullscreenLoading = false
         this.resetForm('appForm')
       })
     },

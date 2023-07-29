@@ -1,6 +1,7 @@
 <template>
   <div class="fillcontain">
     <div class="table_container">
+      <el-button icon="el-icon-refresh" circle style="margin-bottom: 10px;float: right;" @click="fetchData()" />
       <el-table v-loading="loading" :data="appData" highlight-current-row style="width: 100%" border>
         <el-table-column type="index" width="80" />
         <el-table-column property="appKey" label="唯一号" width="200" sortable />
