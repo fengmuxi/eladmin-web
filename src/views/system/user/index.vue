@@ -176,6 +176,7 @@
               />
             </template>
           </el-table-column>
+          <el-table-column :show-overflow-tooltip="true" prop="loginTime" width="135" label="最后登录时间" />
           <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135" label="创建日期" />
           <el-table-column
             v-if="checkPer(['admin','user:edit','user:del'])"
@@ -256,11 +257,11 @@ export default {
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
         ],
         nickName: [
           { required: true, message: '请输入用户昵称', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
         ],
         email: [
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },

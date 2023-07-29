@@ -5,7 +5,7 @@
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
         <label class="el-form-item-label">过期时间</label>
-        <el-input v-model="query.expirationTime" clearable placeholder="过期时间" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <date-range-picker v-model="query.expirationTime" class="date-item" />
         <label class="el-form-item-label">是否使用</label>
         <el-select v-model="query.status" filterable placeholder="请选择" style="margin: 0 3px 10px 0;vertical-align: middle;">
           <el-option
@@ -16,7 +16,7 @@
           />
         </el-select>
         <label class="el-form-item-label">卡密类型</label>
-        <el-select v-model="form.type" filterable placeholder="请选择" style="margin: 0 3px 10px 0;vertical-align: middle;">
+        <el-select v-model="query.type" filterable placeholder="请选择" style="margin: 0 3px 10px 0;vertical-align: middle;">
           <el-option
             v-for="item in dict.kami_type"
             :key="item.id"
@@ -88,6 +88,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="number" label="兑换数量" />
+        <el-table-column prop="createTime" label="创建时间" />
         <el-table-column v-if="checkPer(['admin','userKami:edit','userKami:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
@@ -110,15 +111,16 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import DateRangePicker from '@/components/DateRangePicker'
 
 const defaultForm = { id: null, kaMi: null, expirationTime: null, createTime: null, updateTime: null, status: null, useId: null, type: null, number: null, generateNumber: null }
 export default {
   name: 'UserKami',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { pagination, crudOperation, rrOperation, udOperation, DateRangePicker },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['kami_status', 'kami_type'],
   cruds() {
-    return CRUD({ title: '卡密', url: 'api/userKami', idField: 'id', sort: 'id,desc', crudMethod: { ...crudUserKami }})
+    return CRUD({ title: '卡密', url: 'api/userKami', idField: 'id', sort: 'createTime,desc', crudMethod: { ...crudUserKami }})
   },
   data() {
     return {
@@ -159,8 +161,8 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        delExpirationKaMi()
+      }).then(async() => {
+        await delExpirationKaMi()
         this.crud.refresh()
       }).catch(() => {
       })

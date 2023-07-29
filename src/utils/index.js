@@ -386,3 +386,35 @@ export function downloadFile(obj, name, suffix) {
   link.click()
   document.body.removeChild(link)
 }
+
+/**
+ * 解决排序后数据错乱导致列表数据更新出错的问题
+ * @param {tableData} 列表数据数据
+ * @returns {selectItem} 需要替换的数据
+ * @returns {idName} id名
+ */
+export function updateTableItem(tableData, selectItem, idName = 'id') {
+  for (const v of tableData) {
+    if (v[idName] === selectItem[idName]) {
+      const index = tableData.indexOf(v)
+      tableData.splice(index, 1, selectItem)
+      break
+    }
+  }
+}
+
+/**
+ * 解决排序后数据错乱导致列表数据删除出错的问题
+ * @param {tableData} 列表数据数据
+ * @returns {selectItem} 需要删除的数据
+ * @returns {idName} id名
+ */
+export function deleteTableItem(tableData, selectItem, idName = 'id') {
+  for (const v of tableData) {
+    if (v[idName] === selectItem[idName]) {
+      const index = tableData.indexOf(v)
+      tableData.splice(index, 1)
+      break
+    }
+  }
+}
