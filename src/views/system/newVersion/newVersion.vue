@@ -100,7 +100,7 @@ export default {
             this.fullscreenLoading = true
             setTimeout(() => {
               this.fullscreenLoading = false
-            }, 30000)
+            }, 120000)
             addVersionInfo(this.appForm).then(response => {
               console.log(response.data)
               if (response.data.versionId !== 0) {
